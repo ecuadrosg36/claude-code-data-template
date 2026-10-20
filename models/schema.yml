@@ -25,5 +25,7 @@ models:
     columns:
       - name: customer_id
         data_tests: [unique, not_null]
+      - name: completed_order_count
+        data_tests: [not_null]
       - name: revenue_cents
         data_tests: [not_null]

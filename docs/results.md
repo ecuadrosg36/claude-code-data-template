@@ -7,8 +7,8 @@ captured stdout from `scripts/demo.py`, not a reconstructed conversation.
 | Check | Observed result |
 | --- | --- |
 | `uv sync` | Resolved and installed dependencies; lockfile committed |
-| `.venv/bin/pytest -q` | 46 passed |
-| Fresh dbt clean then `dbt build --profiles-dir . --target dev` | PASS=14, WARN=0, ERROR=0, SKIP=0; 1 seed, 2 models, 11 tests |
+| `.venv/bin/pytest -q` | 53 passed |
+| Fresh dbt clean then `dbt build --profiles-dir . --target dev` | PASS=15, WARN=0, ERROR=0, SKIP=0; 1 seed, 2 models, 12 tests |
 | Published settings schema validation | Passed with jsonschema; fetched schema SHA-256 below |
 | Skill frontmatter validator | `Skill is valid!` |
 | Real downstream build via PostToolUse | Passed healthy; exited 1 and returned documented block feedback after duplicate injection |
@@ -53,3 +53,17 @@ interactive hook loading is certified. Hooks can be bypassed and Stop's loop
 escape does not certify completion; [README](../README.md) details those limits.
 Hosted CI evidence is available on the pull request; local results above stand
 independently of hosted execution.
+
+## PR review regression: null order counts
+
+The original reconciliation missed an existing customer with a null completed
+order count and matching revenue. The new in-memory DuckDB regression executes
+the shipped SQL: before the fix, both the null-count and null-revenue cases failed
+(2 failed, 5 passed). With `IS DISTINCT FROM` for both aggregate comparisons,
+all seven cases pass, including healthy, mismatched, missing, and unexpected
+customer rows. A separate dbt `not_null` test now covers the count column.
+
+The full pytest suite passes 53 cases, and a real dbt build passes all 15 nodes
+(12 data tests). A manual local injection set customer 101's count to NULL while
+retaining revenue 15000: the real Stop handler returned `decision: block` after
+`dbt test` exited 1. A full rebuild restored the mart and Stop then passed.

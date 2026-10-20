@@ -9,4 +9,5 @@ select coalesce(e.customer_id, f.customer_id) as customer_id
 from expected e
 full outer join {{ ref('fct_customer_orders') }} f using (customer_id)
 where e.customer_id is null or f.customer_id is null
-   or e.orders != f.completed_order_count or e.cents != f.revenue_cents
+   or e.orders is distinct from f.completed_order_count
+   or e.cents is distinct from f.revenue_cents
