@@ -1,0 +1,21 @@
+name: Offline verification
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DBT_SEND_ANONYMOUS_USAGE_STATS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.1'
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run pytest -q
+      - run: uv run dbt build --profiles-dir . --target dev
+      - run: uv run python scripts/demo.py
