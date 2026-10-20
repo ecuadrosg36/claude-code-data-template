@@ -1,0 +1,16 @@
+Offline hook demo: real hook handlers and local dbt; no Claude/model/API session.
+PreToolUse Bash: duckdb -c "DROP TABLE raw_orders" (submitted text only)
+{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "DROP/TRUNCATE blocked. Use a reviewed migration outside this demo workflow."}}
+PostToolUse stg_orders.sql: build --select stg_orders+ (healthy)
+{}
+Injected one duplicate synthetic order into local dev seed table.
+PostToolUse stg_orders.sql: downstream build detects duplicate
+{"decision": "block", "reason": "dbt build exited 1. Inspect local logs/dbt.log and target/run_results.json; fix the cause and rerun."}
+Stop: real dbt test detects duplicate
+{"decision": "block", "reason": "dbt test exited 1. Inspect local logs/dbt.log and target/run_results.json; fix the cause and rerun. Do not claim completion. If unable to fix, report the blocker on the next stop attempt."}
+Stop retry: explicit loop escape, NOT a passing result
+{"systemMessage": "Stop loop escape: validation NOT certified. Report outstanding failures; do not claim completion."}
+Restored seed and rebuilt all models/tests successfully.
+Stop after repair: real dbt test passes
+{}
+Verified mart rows (customer_id, completed_order_count, revenue_cents): [(101, 2, 15000), (103, 1, 2500)]
