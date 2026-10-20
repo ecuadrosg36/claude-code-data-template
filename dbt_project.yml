@@ -1,0 +1,14 @@
+name: engineer_portfolio
+version: '1.0.0'
+config-version: 2
+profile: engineer_portfolio
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [data_tests]
+clean-targets: [target, dbt_packages]
+models:
+  engineer_portfolio:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

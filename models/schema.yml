@@ -1,0 +1,29 @@
+version: 2
+seeds:
+  - name: raw_orders
+    description: Synthetic orders only; no production or personal data.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+models:
+  - name: stg_orders
+    description: One row per order; typed identifiers and integer cents.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests: [not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [completed, cancelled]
+      - name: amount_cents
+        data_tests: [not_null]
+  - name: fct_customer_orders
+    description: One row per customer with completed orders; cancelled orders excluded.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: revenue_cents
+        data_tests: [not_null]

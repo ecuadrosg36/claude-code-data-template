@@ -1,0 +1,5 @@
+order_id,customer_id,order_date,status,amount_cents
+1,101,2026-01-01,completed,12000
+2,101,2026-01-02,completed,3000
+3,102,2026-01-02,cancelled,5000
+4,103,2026-01-03,completed,2500
