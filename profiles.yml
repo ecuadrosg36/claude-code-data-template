@@ -1,0 +1,9 @@
+# Local DuckDB only. A real project adds a prod target that reads its credentials with env_var(),
+# and guard_bash.py stops Claude from running against it.
+shop:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: shop.duckdb
+      threads: 4
