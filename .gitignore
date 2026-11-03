@@ -10,3 +10,4 @@ logs/
 *.duckdb
 *.duckdb.wal
 .claude/settings.local.json
+.user.yml
