@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: One row per order, including orders whose customer has not arrived yet.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: country_code
+        data_tests: [not_null]
+  - name: dim_customers
+    description: One row per customer with order count and lifetime value (refunds excluded).
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
